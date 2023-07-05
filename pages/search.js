@@ -1,6 +1,6 @@
 import { Form, Row, Col, Button } from "react-bootstrap";
 import React, { useState, useEffect } from 'react'
-//import { useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useRouter } from "next/router";
 
 export default function AdvanceSearch() {
@@ -56,7 +56,7 @@ export default function AdvanceSearch() {
         for (const prop in data) {
             setValue(prop, data[prop])
         }
-    }, [])
+    }, [setValue])
 
     // register input fields and set up a partial validation for the form
     return (
