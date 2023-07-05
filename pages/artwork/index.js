@@ -21,6 +21,20 @@ export default function Artwork() {
     let fetchUrl = finalQuery ? `https://collectionapi.metmuseum.org/public/collection/v1/search?${finalQuery}` : null;
     const { data, error } = useSWR(fetchUrl);
 
+    // UseEffect Hook to populate a 2D array of data for paging for artworkList
+    useEffect(() => {
+        if (data) {
+            let results = [];
+
+            for (let i = 0; i < data?.objectIDs?.length; i += PER_PAGE) {
+                const chunk = data?.objectIDs.slice(i, i + PER_PAGE);
+                results.push(chunk);
+            }
+            setArtworkList(results);
+            setPage(1);
+        }
+    }, [data]);
+    
     // Exception handling
     if (error) {
         return <Error statusCode={404} />;
@@ -38,21 +52,7 @@ export default function Artwork() {
         if (page < artworkList.length) {
             setPage(page + 1);
         }
-    }
-
-    // UseEffect Hook to populate a 2D array of data for paging for artworkList
-    useEffect(() => {
-        if (data) {
-            let results = [];
-
-            for (let i = 0; i < data?.objectIDs?.length; i += PER_PAGE) {
-                const chunk = data?.objectIDs.slice(i, i + PER_PAGE);
-                results.push(chunk);
-            }
-            setArtworkList(results);
-            setPage(1);
-        }
-    }, [data]);
+    }    
 
     // Iterate the artworkList to call ArtworkCard component + Pagination + Not found condition
     return (

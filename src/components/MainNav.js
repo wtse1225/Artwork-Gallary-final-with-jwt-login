@@ -4,6 +4,8 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+
 
 export default function MainNav() {
     // Set up router to redirect to /artwork page

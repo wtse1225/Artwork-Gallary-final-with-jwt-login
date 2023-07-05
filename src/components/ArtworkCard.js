@@ -3,6 +3,8 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Link from 'next/link';
 import Error from 'next/error';
+import React, { useEffect } from 'react';
+
 
 export default function ArtworkCard({objectID}) {
     // Use SWR to fetch data
