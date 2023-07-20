@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import {Row, Col, Card, Pagination} from 'react-bootstrap';
+import { Row, Col, Card, Pagination } from 'react-bootstrap';
 import useSWR from 'swr';
 import Error from "next/error";
 import ArtworkCard from "@/src/components/ArtworkCard";
+import validObjectIDList from '@/public/data/validObjectIDList.json';
 
 const PER_PAGE = 12;
 
@@ -25,11 +26,20 @@ export default function Artwork() {
     useEffect(() => {
         if (data) {
             let results = [];
-
-            for (let i = 0; i < data?.objectIDs?.length; i += PER_PAGE) {
-                const chunk = data?.objectIDs.slice(i, i + PER_PAGE);
+            // Using the objectID JSON to filter objectID to avoid 404 invalid objectID returns
+            let filteredResults = validObjectIDList.objectIDs.filter(x => data.objectIDs?.includes(x));
+            
+            for (let i = 0; i < filteredResults.length; i += PER_PAGE) {
+                const chunk = filteredResults.slice(i, i + PER_PAGE);
                 results.push(chunk);
-            }
+            }            
+
+            // Old method
+            //for (let i = 0; i < data?.objectIDs?.length; i += PER_PAGE) {
+            //    const chunk = data?.objectIDs.slice(i, i + PER_PAGE);
+            //    results.push(chunk);
+            //}
+
             setArtworkList(results);
             setPage(1);
         }

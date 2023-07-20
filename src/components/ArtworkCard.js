@@ -36,7 +36,7 @@ export default function ArtworkCard({objectID}) {
                     <br/>
                 </Card.Text>
                 <Link href={`/artwork/${objectID}`} passHref>
-                    <Button variant="primary" >ID: {objectID}</Button>
+                    <Button variant="outline-success" >ID: {objectID}</Button>
                 </Link>
             </Card.Body>
         </Card>

@@ -2,6 +2,7 @@ import Layout from '@/src/components/Layout';
 import '@/styles/globals.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { SWRConfig } from 'swr';
+import { useAtom } from 'jotai';
 
 // wrap the Component with Layout and SWR to ensure unified layouts
 export default function App({ Component, pageProps }) {
