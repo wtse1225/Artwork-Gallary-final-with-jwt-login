@@ -5,7 +5,7 @@
 *  (including web sites) or distributed to other students.
 * 
 *  Name: Wai Hing William Tse   Student ID: 149 992 216     Date: 7/19/2023
-*  Cyclic Link: https://blue-violet-stingray-wrap.cyclic.app
+*  Cyclic Link: https://benevolent-narwhal-8e0f7e.netlify.app/
 *
 ********************************************************************************/ 
 
