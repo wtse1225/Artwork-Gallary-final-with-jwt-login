@@ -1,11 +1,12 @@
 /*********************************************************************************
-*  WEB422 - Assignment 5
+*  WEB422 - Assignment 6
 *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  
 *  No part of this assignment has been copied manually or electronically from any other source
 *  (including web sites) or distributed to other students.
 * 
-*  Name: Wai Hing William Tse   Student ID: 149 992 216     Date: 7/19/2023
-*  Cyclic Link: https://benevolent-narwhal-8e0f7e.netlify.app/
+*  Name: Wai Hing William Tse   Student ID: 149 992 216     Date: 8/3/2023
+   Vercel Link(Frontend): https://artwork-gallary-final-with-jwt-login.vercel.app
+*  Cyclic Link(Backend): https://cute-cyan-lemur-hat.cyclic.cloud
 *
 ********************************************************************************/ 
 
