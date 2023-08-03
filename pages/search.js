@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from "next/router";
 import { useAtom } from "jotai";
 import { searchHistoryAtom } from "@/store";
+import { addToHistory } from "@/lib/userData";
 
 export default function AdvanceSearch() {
     // setup the router
@@ -12,7 +13,7 @@ export default function AdvanceSearch() {
     const [ searchHistory, setSearchHistory ] = useAtom(searchHistoryAtom);
 
     // Take the form data and generate a queryString for the /artwork route
-    const submitForm = (data) => {
+    async function submitForm(data) {
         let queryString = '';
 
         queryString += `${data.searchBy}=true`;
@@ -33,7 +34,8 @@ export default function AdvanceSearch() {
         router.push(`/artwork?${queryString}`);
 
         // add the queryString to the searchHistory
-        setSearchHistory(current => [...current, queryString]);
+        setSearchHistory(await addToHistory(queryString));
+        //setSearchHistory(current => [...current, queryString]);
     }
 
     // Set up methods to handle form

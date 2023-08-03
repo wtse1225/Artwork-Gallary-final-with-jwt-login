@@ -1,10 +1,11 @@
 import useSWR from 'swr';
 import Card from 'react-bootstrap/Card';
 import Error from 'next/error';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { favouritesAtom } from '@/store';
 import { Button } from 'react-bootstrap';
+import { addToFavourites, removeFromFavourites } from '@/lib/userData';
 
 export default function ArtworkCardDetail({objectID}) {
     // Use SWR to fetch data
@@ -12,17 +13,25 @@ export default function ArtworkCardDetail({objectID}) {
 
     // useState hook for the atom
     const [favouritesList, setFavouritesList ] = useAtom(favouritesAtom);
-    const [ showAdded, setShowAdded ] = useState(favouritesList.includes(objectID));
+    const [ showAdded, setShowAdded ] = useState(false); // changed to false?
+    //const [ showAdded, setShowAdded ] = useState(favouritesList.includes(objectID));
+
+    useEffect(()=>{
+        setShowAdded(favouritesList?.includes(objectID))
+    }, [favouritesList])
+    
 
     // A functino to handle favorites clicked feature
-    function favouritesClicked() {
+    async function favouritesClicked() {
         if (showAdded) {
-            setFavouritesList(current => current.filter(fav => fav != objectID));
-            setShowAdded(false);
+            setFavouritesList(await removeFromFavourites(objectID));
+            //setFavouritesList(current => current.filter(fav => fav != objectID));
+            //setShowAdded(false);
         }
         else {
-            setFavouritesList(current => [...current, objectID]);
-            setShowAdded(true);
+            setFavouritesList(await addToFavourites(objectID));
+            //setFavouritesList(current => [...current, objectID]);
+            //setShowAdded(true);
         }
     }
 

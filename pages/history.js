@@ -3,10 +3,14 @@ import { searchHistoryAtom } from "@/store";
 import { useRouter } from "next/router";
 import { ListGroup, Button, Card } from "react-bootstrap";
 import styles from '@/styles/History.module.css';
+import { removeFromHistory } from "@/lib/userData";
+import { favouritesAtom } from "@/store";
 
 export default function History() {
     const [searchHistory, setSearchHistory] = useAtom(searchHistoryAtom);
+    const [favouritesList] = useAtom(favouritesAtom);
     const router = useRouter();
+    if(!favouritesList) return null;
 
     // Loop through the searchHistory to get a list of parsed search queries
     let parsedHistory = [];
@@ -24,12 +28,10 @@ export default function History() {
     }
 
     // Remove an element from searchHistory list
-    const removeHistoryClicked = (e, index) => {
-        //e.stopPropagation(); // Needed to remove this line or warning: Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-        setSearchHistory(current => {
-            let x = [...current];
-            x.splice(index, 1)
-            return x;
+    async function removeHistoryClicked(e, index) {
+        //setSearchHistory(await removeFromHistory(searchHistory[index]));
+        removeFromHistory(searchHistory[index]).then((updatedHistory) => {
+            setSearchHistory(updatedHistory);
         });
     }
 

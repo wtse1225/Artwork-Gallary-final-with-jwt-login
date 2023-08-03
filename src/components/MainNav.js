@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAtom } from 'jotai'; // Absolutely stupid that importing useAtom here would cause server errors unless I import it in the _app.js
 import { searchHistoryAtom } from '@/store';
-import NextLink from 'next/link';
+import { addToHistory } from '@/lib/userData';
+import { readToken, removeToken } from '@/lib/authenticate';
 
 export default function MainNav() {
     // Set up router to redirect to /artwork page
@@ -13,16 +14,27 @@ export default function MainNav() {
     const [isExpanded, setExpand] = useState(false);
     // Get a reference from searchHistory
     const [searchHistory, setSearchHistory] = useAtom(searchHistoryAtom);
+    // Prevent hydration, trivial stuff to implement
+    const [isClient, setIsClient] = useState(false);
+
+    // Read a token
+    let token = readToken();
+
+    // For the hydration problem
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     // Extract the search value and navigate to the target page
-    const handleSearch = (e) => {
+    async function handleSearch(e) {
         e.preventDefault();
         let searchField = e.target.search.value;
         router.push(`/artwork?title=true&q=${searchField}`);
 
         setExpand(false);
         // add the queryString to the atom
-        setSearchHistory(current => [...current, `title=true&q=${searchField}`])
+        setSearchHistory(await addToHistory(`title=true&q=${searchField}`));
+        //setSearchHistory(current => [...current, `title=true&q=${searchField}`])
     }
 
     // Following the requirements with wrapping the <Link> tags causing React to keep 
@@ -33,10 +45,17 @@ export default function MainNav() {
         router.push(link);
     };
 
-    // Trigger handleSearch when form is submitted
+    function logout() {
+        setExpand(false);
+        removeToken();
+        router.push('/login');
+    }
+    
     return (
         <>
-            <Navbar className='fixed-top' expanded={isExpanded} bg="dark" variant="dark" expand="md">
+            { isClient && (
+                <>
+                <Navbar className='fixed-top' expanded={isExpanded} bg="dark" variant="dark" expand="md">
                 <Container>
                     <Navbar.Brand>Wai Hing William Tse</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => setExpand(!isExpanded)} />
@@ -44,10 +63,18 @@ export default function MainNav() {
 
                         <Nav className="me-auto">
                             <Nav.Link href="/" onClick={() => setExpand(false)} active={router.pathname === "/"}>Home</Nav.Link>
-                            <Nav.Link href="/search" onClick={() => setExpand(false)} active={router.pathname === "/search"}>Advanced Search</Nav.Link>
+                            {token && <Nav.Link href="/search" onClick={() => setExpand(false)} active={router.pathname === "/search"}>Advanced Search</Nav.Link>}
                         </Nav>
 
-                        &nbsp;<Form className="d-flex" onSubmit={handleSearch}>
+                        { !token && (
+                            <Nav className="me-auto">
+                                <Nav.Link href="/register" onClick={() => setExpand(false)} active={router.pathname === "/register"}>Register</Nav.Link>
+                                <Nav.Link href="/login" onClick={() => setExpand(false)} active={router.pathname === "/login"}>Login</Nav.Link>
+                            </Nav>
+                        )}
+                        
+
+                        &nbsp;{token && <Form className="d-flex" onSubmit={handleSearch}>
                             <Form.Control
                                 type="search"
                                 name="search"
@@ -56,13 +83,14 @@ export default function MainNav() {
                                 aria-label="Search"
                             />
                             <Button type='submit' variant="success">Search</Button>
-                        </Form>&nbsp;
-
+                        </Form>}&nbsp;
+                        
                         <Nav>
-                            <NavDropdown title="User Name" id="basic-nav-dropdown">
-                                <NavDropdown.Item onClick={() => navigateToLink('/favourites')} active={router.pathname === "/favourites"}>Favourites</NavDropdown.Item>
-                                <NavDropdown.Item onClick={() => navigateToLink('/history')} active={router.pathname === "/history"}>Search History</NavDropdown.Item>
-                            </NavDropdown>
+                            {token && <NavDropdown title={token.userName} id="basic-nav-dropdown">
+                                <NavDropdown.Item onClick={() => navigateToLink('/favourites')}>Favourites</NavDropdown.Item>
+                                <NavDropdown.Item onClick={() => navigateToLink('/history')}>Search History</NavDropdown.Item>
+                                <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
+                            </NavDropdown>}
                         </Nav>
 
                     </Navbar.Collapse>
@@ -70,6 +98,9 @@ export default function MainNav() {
             </Navbar>
             <br />
             <br />
+            </>
+            )}
+            
         </>
     );
 }
