@@ -67,7 +67,7 @@ export default function MainNav() {
                         </Nav>
 
                         { !token && (
-                            <Nav className="me-auto">
+                            <Nav>
                                 <Nav.Link href="/register" onClick={() => setExpand(false)} active={router.pathname === "/register"}>Register</Nav.Link>
                                 <Nav.Link href="/login" onClick={() => setExpand(false)} active={router.pathname === "/login"}>Login</Nav.Link>
                             </Nav>
